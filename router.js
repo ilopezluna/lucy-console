@@ -7,6 +7,8 @@ var Jade = require('jade');
 var ConsoleRouter = module.exports = function(options) {
   var self = this;
   self.options = options || {};
+  self.options.basePath = self.options.basePath || '';
+  self.options.oauth_callback = self.options.oauth_callback || '';
 
   self.router = Express.Router();
   self.router.use(require('compression')());
@@ -29,9 +31,10 @@ var ConsoleRouter = module.exports = function(options) {
     proxyHost: self.options.proxy,
     client_ids: self.options.client_ids || {},
     oauth_callback: self.options.oauth_callback,
+    basePath: self.options.basePath,
   }
   if (self.options.swagger) {
-    renderOpts.specURL = (self.options.rootDir || '') + '/swagger.json',
+    renderOpts.specURL = self.options.basePath + '/swagger.json',
     codeRouter.swagger = self.options.swagger;
     self.router.get('/swagger.json', function(req, res) {
       res.json(self.options.swagger);
